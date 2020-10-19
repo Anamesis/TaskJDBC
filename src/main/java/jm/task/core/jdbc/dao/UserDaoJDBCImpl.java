@@ -42,15 +42,11 @@ public class UserDaoJDBCImpl implements UserDao {
 
         try (Connection conn = Util.getConnection()) {
             try (Statement statemnt = conn.createStatement()) {
-                conn.setAutoCommit(false);
                 statemnt.executeUpdate(saveSql);
-                conn.commit();
                 System.out.println("User " + name + "added to DBaseSaved");
             } catch (SQLException e) {
                 e.printStackTrace();
-                conn.rollback();
             }
-            conn.setAutoCommit(true);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
