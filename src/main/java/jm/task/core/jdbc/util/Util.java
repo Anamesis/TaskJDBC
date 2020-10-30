@@ -30,18 +30,19 @@ public class Util {
     private Util(){}
 
 
-        public static SessionFactory getSessionFactory () {
-            if (sessionFactory == null) {
-                try {
-                    Configuration configuration = new Configuration().configure();
-                    configuration.addAnnotatedClass(User.class);
-                    StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
-                    sessionFactory = configuration.buildSessionFactory(builder.build());
-
-                } catch (Exception e) {
-                    System.out.println("Исключение!" + e);
-                }
-            }
-            return sessionFactory;
-        }
+    public static SessionFactory getSessionFactory(){
+        SessionFactory sessionFactory;
+        Configuration configuration = new Configuration()
+                .setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver")
+                .setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/Users1")
+                .setProperty("hibernate.connection.password", "123")
+                .setProperty("hibernate.connection.username", "root")
+                .setProperty("hibernate.connection.pool_size", "2")
+                .setProperty("hibernate.hbm2ddl.auto", "update")
+                .setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect")
+                .addAnnotatedClass(User.class);
+        StandardServiceRegistryBuilder sBuilder = new StandardServiceRegistryBuilder()
+                .applySettings(configuration.getProperties());
+        return sessionFactory = configuration.buildSessionFactory(sBuilder.build());
+    }
     }
