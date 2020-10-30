@@ -64,7 +64,6 @@ public class UserDaoHibernateImpl implements UserDao {
                     tx1.rollback();
                 }
             }
-
         }
     }
 
