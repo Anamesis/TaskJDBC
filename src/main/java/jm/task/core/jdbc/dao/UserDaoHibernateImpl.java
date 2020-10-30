@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import javax.security.auth.login.Configuration;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
@@ -72,7 +73,7 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = Util.getSessionFactory().openSession()) {
             Transaction tx1 = session.beginTransaction();
             try {
-                User user = (User) session.get(User.class, id);
+                User user = session.get(User.class, id);
                 session.delete(user);
                 tx1.commit();
             } catch (Exception e) {
@@ -87,9 +88,18 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        Session session = Util.getSessionFactory().openSession();
-        List<User> user = session.createQuery("FROM User").list();
-        return user;
+        List<User> users = new ArrayList<>();
+        try (Session session = Util.getSessionFactory().openSession()) {
+            Transaction tx1 = session.beginTransaction();
+            try {
+                List<User> user = session.createQuery("FROM User").list();
+                return user;
+            } catch (Exception e) {
+                if (tx1 != null) {
+                    tx1.rollback();
+                }
+            }
+        }return users;
     }
 
 
